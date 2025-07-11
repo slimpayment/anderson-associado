@@ -128,7 +128,8 @@ export default function Dashboard() {
 
 
 useEffect(() => {
-  refreshlancamentosPendentes();
+
+  
 }, []);
 
 
