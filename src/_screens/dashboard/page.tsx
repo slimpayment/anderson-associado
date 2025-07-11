@@ -139,7 +139,7 @@ useEffect(() => {
       <BodyPageDefault>
         <HeaderDashboard/>
         <div className="font-bold pl-4 mt-0">
-          <span className="text-[22px]">Olá,</span><span className="p-1 text-[20px]">Administrador</span>
+          <span className="text-[22px]">Olá,</span><span className="p-1 text-[20px]">Associado</span>
         </div>
 
 
