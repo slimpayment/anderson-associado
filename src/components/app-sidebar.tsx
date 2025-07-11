@@ -168,11 +168,10 @@ let name_bussiness = process.env.NEXT_PUBLIC_COMPANY_NAME
 
 import { NavPrincipal } from "./_nav_menu/nav-principal";
 import { NavCustomer } from "./_nav_menu/nav-customer";
-import { NavAssociados } from "./_nav_menu/nav-associados";
 import { NavFinanceiro } from "./_nav_menu/nav-financeiro";
 
-import { NaGerenciamento } from "./_nav_menu/nav-gerenciamento";
 
+import { NavTools } from "./_nav_menu/nav-tools";
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -195,11 +194,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         <NavPrincipal />
-        <NavAssociados />
         <NavCustomer />
         
-        <NaGerenciamento />
-        
+        <NavTools />
       </SidebarContent>
 
     </Sidebar>

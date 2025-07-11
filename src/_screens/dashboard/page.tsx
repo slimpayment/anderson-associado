@@ -23,7 +23,8 @@ import {
   Ban,
   Eye,
   BanIcon,
-  RefreshCcw
+  RefreshCcw,
+  PlusIcon
 } from "lucide-react";
 
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
@@ -149,8 +150,7 @@ useEffect(() => {
 
         <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4">
 
-          <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
-          </div>
+          {/* <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4"></div> */}
 
 
 
@@ -159,29 +159,24 @@ useEffect(() => {
           {/* Tabela com faturas */}
           <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold mb-4">Lançamentos Pendentes</h3>
+              <h3 className="text-lg font-semibold mb-4">Meus Lançamentos</h3>
 
             <div className="flex gap-2">
                <Button onClick={refreshlancamentosPendentes} >
                   <RefreshCcw className="w-4 h-4" />
                 </Button>
-            </div>
+
+               <Button onClick={refreshlancamentosPendentes} >
+                  <PlusIcon className="w-4 h-4" />
+                </Button>
 
             </div>
 
-
-
-
-
-
-
-
-
+            </div>
             <div className="overflow-x-auto w-full">
               <Table>
                 <TableHeader className="bg-muted rounded-md">
                   <TableRow>
-                    <TableHead className="font-semibold text-sm">Associado</TableHead>
                     <TableHead className="font-semibold text-sm">Data</TableHead>
                     <TableHead className="font-semibold text-sm">Categoria</TableHead>
                     <TableHead className="font-semibold text-sm">Atividade</TableHead>
@@ -193,7 +188,6 @@ useEffect(() => {
                 <TableBody>
                   {LancamentoExterno.map((datalancamento) => (
                     <TableRow key={datalancamento.id}>
-                      <TableCell className="font-medium">{datalancamento.associado}</TableCell>
 
                       <TableCell>{datalancamento.dataLancamento}</TableCell>
 
@@ -203,21 +197,7 @@ useEffect(() => {
 
                       <TableCell className="text-left">
 
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => router.push(`/associado/view/`)}
-                        >
-
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger> <CheckCircle2 className="w-4 h-4 text-green-600" /> </TooltipTrigger>
-                                <TooltipContent>
-                                <p>Aprovar Lancamento</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                        </Button>
+                        
 
                         <Button
                           size="icon"
@@ -229,7 +209,7 @@ useEffect(() => {
                             <Tooltip>
                                 <TooltipTrigger> <BanIcon className="w-4 h-4 text-red-600" /> </TooltipTrigger>
                                 <TooltipContent>
-                                <p>Recusar Lancamento</p>
+                                <p>Remover Lancamento</p>
                                 </TooltipContent>
                             </Tooltip>
                         </TooltipProvider>
