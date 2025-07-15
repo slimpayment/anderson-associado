@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/ca
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
-import { viewAssociado, NovoLancamentoExtrato, viewFilter } from '@/lib/api/_associado';
+import { viewAssociado, NovoLancamentoExtrato } from '@/lib/api/_associado';
 
 import { toast } from 'sonner';
 
@@ -76,7 +76,6 @@ type NovoLancamento = {
 };
 
 type dataFilter = {
-  idassociado : string;
   dataInicial : string;
   dataFinal : string;
 };
@@ -118,8 +117,6 @@ export default function ExtratoView({ idassociado }: Props) {
 
   //const totalPages = Math.ceil(datalistExtratoSplit.length / ITEMS_PER_PAGE);
   const totalPages = Math.ceil( Number(totalExtrato) / ITEMS_PER_PAGE );
-
-
   
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -168,26 +165,35 @@ export default function ExtratoView({ idassociado }: Props) {
 
 
 
-
   const aplicarFiltro = async () => {
+    
     const dataFilter: dataFilter = {
-      idassociado: idassociado,
+
       dataInicial: dataInicial,
       dataFinal : dataFinal,
     };
 
-    const dataNovoFilter = await viewFilter(dataFilter);
+    //const dataNovoFilter = await viewFilter(dataFilter);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const response = await axios.post(`${API_URL}/associado/filter/`,{
+      token: token ,
+      dataInicial : dataFilter.dataInicial,
+      dataFinal : dataFilter.dataFinal  
+    });
+    let resultData = response.data;
+    setdatalistExtratoSplit( resultData.data );
+    setqtdExtrato( resultData.CountExtratoTotal)
+    settotalPago(resultData.statics.totalPago);
+    settotalPendente(resultData.statics.totalPendente);
+    settotalVencido(resultData.statics.totalVencido);
 
-    settotalPago(dataNovoFilter.statics.totalPago);
-    settotalPendente(dataNovoFilter.statics.totalPendente);
-    settotalVencido(dataNovoFilter.statics.totalVencido);  
+    setdialogFilter(false);
+    console.log('Consultando filtros')
+    console.log( resultData )
+    console.log('Consultando filtros')
 
-    if( dataNovoFilter.event === 'FILTER_EXTRATO_SUCCESS' ){
-      toast.success(dataNovoFilter.message);
-      setdialogFilter(false);
-      setdatalistExtratoSplit( dataNovoFilter.data );
-    }
   };
+
 
 
   const detailsAssociado = async () => {
@@ -195,11 +201,9 @@ export default function ExtratoView({ idassociado }: Props) {
     const response = await axios.post(`${API_URL}/associado/details/`,{
       token: token
     });
+
     let responseData = response.data;
     let responseEvent = responseData.event;
-    console.log(  '***************** detailsAssociado')
-      console.log(  responseData )
-    console.log(  '***************** detailsAssociado')
 
     setdatalistExtratoSplit( responseData.list_extrato_split );
     setnameprofile(responseData.nameAssociado);
@@ -222,20 +226,12 @@ export default function ExtratoView({ idassociado }: Props) {
 
   const viewDataAssociado = async () => {
 
-    console.log( 'consultando associadosDetails ....' )
     try {
 
       
       //const dataViewAssociado = await viewAssociado(tokenIdAssociado);
       const dataViewAssociado = await viewAssociado();
 
-
-
-      // if( dataViewAssociado.event === 'SESSION_EXPIRE' ){
-      //   document.cookie = 'token=; path=/; max-age=0'
-      //   console.log('Deslogando ....')
-      //   router.push('/');
-      // }
       setqtdExtrato('')
       settotalPago(dataViewAssociado.statics.totalPago);
       settotalPendente(dataViewAssociado.statics.totalPendente);
@@ -259,7 +255,7 @@ export default function ExtratoView({ idassociado }: Props) {
   };
 
   const syncExtrato = async () => {
-    //viewDataAssociado();
+    detailsAssociado();
     toast.success('Extrato Atualizado!');
   }
 
