@@ -101,25 +101,26 @@ export default function ExtratoView({ idassociado }: Props) {
   const [ totalPago, settotalPago ] = useState('');
   const [ totalPendente, settotalPendente ] = useState('');
   const [ totalVencido, settotalVencido ] = useState('');
+  const [ qtdExtrato, setqtdExtrato ] = useState('');
 
 
   // USAR O HOOK PARA ACESSAR O TOKEN
   const { token, loading: tokenLoading, isAuthenticated } = useToken();
   let tokenIdAssociado: string = token!; // Força sem validação
 
-  console.log('tokenLoading ...')
-  console.log( token )
-  console.log('tokenLoading ...')
-
 
 
 
   // Inicio Paginação tabela
   const ITEMS_PER_PAGE = 10;
+  const totalExtrato = `${qtdExtrato}`;
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(datalistExtratoSplit.length / ITEMS_PER_PAGE);
+  //const totalPages = Math.ceil(datalistExtratoSplit.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil( Number(totalExtrato) / ITEMS_PER_PAGE );
 
+
+  
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
@@ -197,15 +198,13 @@ export default function ExtratoView({ idassociado }: Props) {
     let responseData = response.data;
     let responseEvent = responseData.event;
     console.log(  '***************** detailsAssociado')
-      console.log(  responseData.list_extrato_split )
-      console.log(  '***' )
-      console.log(  responseData.statics )
-
+      console.log(  responseData )
     console.log(  '***************** detailsAssociado')
 
     setdatalistExtratoSplit( responseData.list_extrato_split );
-            setnameprofile(responseData.data.name);
+    setnameprofile(responseData.nameAssociado);
 
+      setqtdExtrato( responseData.CountExtratoTotal)
       settotalPago(responseData.statics.totalPago);
       settotalPendente(responseData.statics.totalPendente);
       settotalVencido(responseData.statics.totalVencido);  
@@ -229,10 +228,6 @@ export default function ExtratoView({ idassociado }: Props) {
       
       //const dataViewAssociado = await viewAssociado(tokenIdAssociado);
       const dataViewAssociado = await viewAssociado();
-      
-      console.log('############################## Extrato dataViewAssociado')
-        console.log( dataViewAssociado )
-      console.log('############################## Extrato dataViewAssociado')
 
 
 
@@ -241,7 +236,7 @@ export default function ExtratoView({ idassociado }: Props) {
       //   console.log('Deslogando ....')
       //   router.push('/');
       // }
-
+      setqtdExtrato('')
       settotalPago(dataViewAssociado.statics.totalPago);
       settotalPendente(dataViewAssociado.statics.totalPendente);
       settotalVencido(dataViewAssociado.statics.totalVencido);  

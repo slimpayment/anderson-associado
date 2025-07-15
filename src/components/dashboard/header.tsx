@@ -25,12 +25,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Bell, BellRing, Check, CircleUser, Code, LogOut, Moon,
   Settings, User } from "lucide-react";
 import { AccountBalance } from "./AccountBalance";
+import { toast } from "sonner";
 
 
 
 
 
 export function HeaderDashboard (){
+
+  const btnlogout = async () => {
+    toast.info('Deslogando ...');
+  };
+
+
+
+
+
     return (
       <>
         <header className="flex  shrink-0 items-center justify-between px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -62,7 +72,12 @@ export function HeaderDashboard (){
                             <DropdownMenuSeparator />
                             <DropdownMenuItem><Code className="w-4 h-4 mr-2" />Integrações</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem variant="destructive"><LogOut className="w-4 h-4 mr-2" />Logout</DropdownMenuItem>
+                            <DropdownMenuItem
+                            variant="destructive"
+                            onClick={ btnlogout }
+                            >
+                              <LogOut className="w-4 h-4 mr-2" />Logout
+                              </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
           </div>
