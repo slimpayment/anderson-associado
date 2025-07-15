@@ -1,6 +1,7 @@
 "use client"
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useRouter } from 'next/navigation'
 
 import {
   Breadcrumb,
@@ -32,9 +33,14 @@ import { toast } from "sonner";
 
 
 export function HeaderDashboard (){
+  const router = useRouter()
 
   const btnlogout = async () => {
     toast.info('Deslogando ...');
+            document.cookie = 'token=; path=/; max-age=0'
+        //console.log('Deslogando ....')
+        router.push('/');
+
   };
 
 
