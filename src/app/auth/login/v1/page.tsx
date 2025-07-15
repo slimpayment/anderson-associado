@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/navigation";
 
-import { Eye, EyeOff, Mail, Lock, ArrowLeft,AlertCircle  } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,21 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
-import { authLogin } from '@/lib/api/_auth';
-
- 
-
-type datalogin = {
-  email : string;
-  password : string;
-};
-
-
-
-
-
-
-
 
 function getCookie(name: string) {
   const matches = document.cookie.match(
@@ -37,7 +22,7 @@ function getCookie(name: string) {
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-export function LoginForm(){
+const LoginPage = () => {
   const router = useRouter();
 
   const [isResetMode, setIsResetMode] = useState(false);
@@ -45,56 +30,23 @@ export function LoginForm(){
   const [authEmail, setauthEmail] = useState("");
   const [authSenha, setauthSenha] = useState("");
   const [valueJWT, setvalueJWT] = useState<string | undefined>();
-  const [isLoading, setIsLoading] = useState(false);
-
-
-
-
 
   // Exemplo token estático, substitua pela resposta da sua API
-  
-  const sendLogin = async () => {
-    const idAssociado = '02b22b35-8c91-4b3f-a317-6987766f14ae';
-    // Aqui você faria a chamada real para API de login,
+  const idAssociado = '02b22b35-8c91-4b3f-a317-6987766f14ae';
 
+  const sendLogin = async () => {
+    // Aqui você faria a chamada real para API de login,
     // enviando authEmail e authSenha, e recebendo o token.
 
     // Para demo, vamos usar o token estático:
     const token = idAssociado;
 
-    // 1º faz a chamada na api auth enviando o email e senha
+    // Salva o token no cookie por 7 dias
+    document.cookie = `token=${token}; path=/; max-age=${60 * 60 * 24 * 7}`;
 
-    const datalogin: datalogin = {
-      email: authEmail,
-      password: authSenha,
-
-    };
-
-
-    const responseAuth = await authLogin(datalogin);
-    setIsLoading(true);
-
-
-  if (responseAuth.event === 'AUTH_LOGIN_FAILED') {
-    //setErrorMessage(responseAuth.message);
-    toast.error(responseAuth.message);
-
-    console.log('Setou mensagem de erro');
-  }
-
-    if( responseAuth.event === 'AUTH_LOGIN_SUCCESS'){
-      let dataToken =  responseAuth.token
-
-      // Salva o token no cookie por 7 dias
-      document.cookie = `token=${dataToken}; path=/; max-age=${60 * 60 * 24 * 7}`;
-  
-      setvalueJWT(dataToken);
-      toast.success('Login efetuado com sucesso!');
-      router.push("/dashboard");
-
-
-    }
-
+    setvalueJWT(token);
+    toast.success('Login efetuado com sucesso!');
+    router.push("/dashboard");
   };
 
   useEffect(() => {
@@ -108,12 +60,11 @@ export function LoginForm(){
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
-
           <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-2xl">
-            {isResetMode ? 'Recuperar Senha' : 'Painel Associados'}
+            {isResetMode ? 'Recuperar Senha' : 'Entrar'}
           </CardTitle>
           <CardDescription>
             {isResetMode
@@ -124,6 +75,11 @@ export function LoginForm(){
         </CardHeader>
 
         <CardContent className="space-y-6">
+          <Alert className="hidden">
+            <AlertDescription>
+              Esta é uma mensagem de exemplo
+            </AlertDescription>
+          </Alert>
 
           {!isResetMode && (
             <div className="space-y-4">
@@ -171,7 +127,12 @@ export function LoginForm(){
               </div>
 
               <div className="flex items-center justify-between">
-                
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="remember" />
+                  <Label htmlFor="remember" className="text-sm">
+                    Lembrar de mim
+                  </Label>
+                </div>
                 <Button
                   type="button"
                   variant="link"
@@ -226,4 +187,4 @@ export function LoginForm(){
   );
 };
 
-
+export default LoginPage;

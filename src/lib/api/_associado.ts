@@ -1,3 +1,4 @@
+import { useToken } from '@/hooks/useToken';
 import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -29,9 +30,20 @@ type dataFilter = {
 };
 
 
-export async function viewAssociado(idassociado: string) {
+// export async function viewAssociado(idassociado: string) {
+export async function viewAssociado() {
   try {
-    const response = await axios.post(`${API_URL}/associado/view/${idassociado}`);
+    let tokensession = '151';
+    let tokenSession = await useToken();
+
+
+    console.log('------------ API viewAssociado');
+    console.log( tokenSession );
+    console.log('------------ API viewAssociado');
+
+    const response = await axios.post(`${API_URL}/associado/details/`,{
+      token: tokenSession
+    });
     return response.data;
   } catch (error: any) {
     // Reempacotar o erro com mensagem útil
@@ -124,7 +136,6 @@ export async function viewFilter(dataFilter: dataFilter) {
   }
 
 }
-
 
 
 

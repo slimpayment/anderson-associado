@@ -24,6 +24,7 @@ export function NavPrincipal() {
 
 
       <SidebarMenu>
+
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <a href="/dashboard"  className="font-bold">
@@ -32,6 +33,21 @@ export function NavPrincipal() {
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
+
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <a href="/extrato">
+                <Home/>
+                <span className="">Extrato</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+
+
+
+
 
       </SidebarMenu>
 

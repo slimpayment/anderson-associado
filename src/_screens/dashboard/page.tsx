@@ -150,7 +150,12 @@ useEffect(() => {
 
         <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4">
 
-          {/* <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4"></div> */}
+          <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
+          
+
+
+          
+          </div>
 
 
 
@@ -173,6 +178,9 @@ useEffect(() => {
             </div>
 
             </div>
+
+
+
             <div className="overflow-x-auto w-full">
               <Table>
                 <TableHeader className="bg-muted rounded-md">

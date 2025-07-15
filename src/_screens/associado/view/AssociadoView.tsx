@@ -231,7 +231,7 @@ const novoLancamento: NovoLancamento = {
   const viewDataAssociado = async () => {
     try {
 
-      const dataViewAssociado = await viewAssociado(idassociado);
+      const dataViewAssociado = await viewAssociado();
 
       settotalPago(dataViewAssociado.statics.totalPago);
       settotalPendente(dataViewAssociado.statics.totalPendente);

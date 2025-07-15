@@ -27,8 +27,8 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased `}>
-
         {children}
+    <span>fds8dsd8sd</span>
         <Toaster richColors position="top-right" closeButton={true} duration={3000} />
       <TopProgressBar />
 
