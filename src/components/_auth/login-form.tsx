@@ -11,15 +11,19 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { authLogin } from '@/lib/api/_auth';
+import { useToken } from '@/hooks/useToken'; // Ajuste o caminho conforme sua estrutura
 
- 
+ import Router from 'next/router';
+import axios from 'axios';
 
 type datalogin = {
   email : string;
   password : string;
 };
 
-
+type dataReset = {
+  email : string;
+};
 
 
 
@@ -39,6 +43,7 @@ function getCookie(name: string) {
 
 export function LoginForm(){
   const router = useRouter();
+  const { token, loading: tokenLoading, isAuthenticated } = useToken();
 
   const [isResetMode, setIsResetMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -46,8 +51,7 @@ export function LoginForm(){
   const [authSenha, setauthSenha] = useState("");
   const [valueJWT, setvalueJWT] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
-
-
+  const [ loadingsend, setloadingsend] = useState(false);
 
 
 
@@ -55,14 +59,9 @@ export function LoginForm(){
   
   const sendLogin = async () => {
     const idAssociado = '02b22b35-8c91-4b3f-a317-6987766f14ae';
-    // Aqui você faria a chamada real para API de login,
-
-    // enviando authEmail e authSenha, e recebendo o token.
-
-    // Para demo, vamos usar o token estático:
     const token = idAssociado;
 
-    // 1º faz a chamada na api auth enviando o email e senha
+
 
     const datalogin: datalogin = {
       email: authEmail,
@@ -96,6 +95,61 @@ export function LoginForm(){
     }
 
   };
+  const sendReset = async () => {
+    const dataReset: dataReset = {
+      email: authEmail,
+    };
+
+  console.log('Resetando senha ')
+  setloadingsend(true); // Ativa o loading
+
+try {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
+  const response = await axios.post(`${API_URL}/auth/reset`,{
+    domainOrigin : window.location.origin,
+    dataemail : dataReset.email,
+  });
+  
+  let dataViewAssociado = response.data;
+  let eventResponse = dataViewAssociado.event;
+  let messageResponse = dataViewAssociado.message;
+  
+  if( eventResponse === 'RESET_EMAIL_FAILED'){
+    console.log('response')
+    console.log(dataViewAssociado)
+    console.log('response')
+
+    toast.warning(messageResponse)
+    setloadingsend(false); // Ativa o loading
+  }
+  
+  if( eventResponse === 'RESET_EMAIL_SUCCESS'){
+    console.log('response')
+    console.log(dataViewAssociado)
+    console.log('response')
+  
+    toast.success(messageResponse)
+    setloadingsend(false); // Ativa o loading
+  }
+  
+} catch (error) {
+    setloadingsend(false); // Ativa o loading
+    toast.warning('Tente novamente mais tarde!');
+
+  console.log('************** error')
+  console.log( error)
+  console.log('************** error')
+  
+}
+
+
+
+
+
+  };
+
+
+
 
   useEffect(() => {
     const savedToken = getCookie("token");
@@ -196,9 +250,12 @@ export function LoginForm(){
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
                     id="resetEmail"
+                    required
                     type="email"
                     placeholder="seu@email.com"
                     className="pl-10"
+                    value={authEmail}
+                    onChange={(e) => setauthEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -208,14 +265,27 @@ export function LoginForm(){
                   type="button"
                   variant="outline"
                   className="flex-1"
-                  onClick={() => setIsResetMode(false)}
+                  
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Voltar
                 </Button>
-                <Button className="flex-1">
-                  Enviar
+
+
+                <Button
+                  className="flex-1"
+                  onClick={sendReset}
+                  disabled={loadingsend}
+                >
+                
+                  {loadingsend ? "Enviando ... " : "Resetar Senha"}
+
                 </Button>
+
+
+
+
+
               </div>
             </div>
           )}
