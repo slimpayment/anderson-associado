@@ -44,9 +44,6 @@ export async function verifySession(tokenSession: tokenSession) {
       
     });
 
-    console.log('---------------------verifySession')
-    console.log(response)
-    console.log('---------------------verifySession')
 
     return response.data;
   } catch (error: any) {

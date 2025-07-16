@@ -110,6 +110,8 @@ export default function ExtratoView({ idassociado }: Props) {
 
 
 
+
+
   // Inicio Paginação tabela
   const ITEMS_PER_PAGE = 10;
   const totalExtrato = `${qtdExtrato}`;
@@ -119,6 +121,8 @@ export default function ExtratoView({ idassociado }: Props) {
   const totalPages = Math.ceil( Number(totalExtrato) / ITEMS_PER_PAGE );
   
   const paginatedData = useMemo(() => {
+      if (!Array.isArray(datalistExtratoSplit)) return []; // Evita o erro
+
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     const end = start + ITEMS_PER_PAGE;
     return datalistExtratoSplit.slice(start, end);

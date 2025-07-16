@@ -112,14 +112,40 @@ const statusIcons = {
     bgColor: "bg-emerald-600",
   },
 }
+import { useToken } from '@/hooks/useToken'; // Ajuste o caminho conforme sua estrutura
+import axios from 'axios';
+
+interface Props {
+  idassociado: string;
+  tokenIdAssociado: string;
+  dadosAssociado: any;
+}
 
 
 
 
-
-
-export default function Dashboard() {
+// export default function Dashboard() {
+export default function Dashboard( { idassociado }: Props  ) {
+  
     const router = useRouter()
+  // USAR O HOOK PARA ACESSAR O TOKEN
+  const { token, loading: tokenLoading, isAuthenticated } = useToken();
+  let tokenIdAssociado: string = token!; // Força sem validação
+
+  const detailsAssociado = async () => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const response = await axios.post(`${API_URL}/associado/details/`,{
+      token: token
+    });
+
+    console.log('--------------- response')
+    console.log(response)
+    console.log('--------------- response')
+
+  };
+
+
+
 
     const refreshlancamentosPendentes = async () => {
       toast.info('Função em desenvolvimento ...')
@@ -129,7 +155,7 @@ export default function Dashboard() {
 
 
 useEffect(() => {
-
+  detailsAssociado();
   
 }, []);
 

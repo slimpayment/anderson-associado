@@ -194,9 +194,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         <NavPrincipal />
-        <NavCustomer />
+        {/* <NavCustomer /> */}
         
-        <NavTools />
+        {/* <NavTools /> */}
       </SidebarContent>
 
     </Sidebar>
