@@ -9,12 +9,12 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/ca
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
-import { viewAssociado, NovoLancamentoExtrato } from '@/lib/api/_associado';
+import { viewAssociado, NovoLancamentoInterno, ListExtratoInterno } from '@/lib/api/_associado';
 
 import { toast } from 'sonner';
 
 import { Button } from "@/components/ui/button";
-import { BadgeDollarSign, CheckCircle2, CircleDollarSign, Clock, Filter, Info, Lock, Plus, PlusCircle, RefreshCcw, Wallet } from 'lucide-react';
+import { BadgeDollarSign, BanIcon, CheckCircle2, CircleDollarSign, Clock, Filter, Info, Lock, Plus, PlusCircle, PlusIcon, RefreshCcw, Wallet } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -49,6 +49,7 @@ import {
 import { useToken } from '@/hooks/useToken'; // Ajuste o caminho conforme sua estrutura
 import Router from 'next/router';
 import axios from 'axios';
+
 interface Props {
   idassociado: string;
   tokenIdAssociado: string;
@@ -66,8 +67,26 @@ type ExtratoListSplit = {
   numero_fatura: number;
   value_percentual : string;
 };
+type DetailsAssociado = {
+  token: string;
+  idassociado : string;
+};
+
+
+type ExtratoListinterno = {
+  id_extrato_interno: string;
+  name_customer : string;
+  data_lancamento : string;
+  categoria : string;
+  atividade : string;
+  value: number;
+  description : string;
+
+
+};
 
 type NovoLancamento = {
+  token: string
   idassociado : string;
   statuslancamento : string;
   valorlancamento : string;
@@ -79,6 +98,24 @@ type dataFilter = {
   dataInicial : string;
   dataFinal : string;
 };
+
+
+const LancamentoExterno = [
+  {
+    id: "INV_0001",
+    associado: "Fulano de Talz",
+    dataLancamento: "26/06/2025",
+    categoria:"Categoria 1",
+    atividade:"Atividade XYZ",
+    valor: "250.00",
+    status: 'pendente'
+  },
+]
+
+
+
+
+
 
 // export default function AssociadoView({ idassociado }: Props) {
 export default function ExtratoView({ idassociado }: Props) {
@@ -96,6 +133,8 @@ export default function ExtratoView({ idassociado }: Props) {
   const [ valorLancamento, setvalorLancamento ] = useState('');
   const [ datalancamento, setdatalancamento ] = useState('');
   const [ selectStatus, setselectStatus ] = useState('');
+  // extrato Interno
+    const [datalistExtratoInterno, setdatalistExtratoInterno] = useState<ExtratoListinterno[]>([]);
 
   const [ totalPago, settotalPago ] = useState('');
   const [ totalPendente, settotalPendente ] = useState('');
@@ -106,6 +145,7 @@ export default function ExtratoView({ idassociado }: Props) {
   // USAR O HOOK PARA ACESSAR O TOKEN
   const { token, loading: tokenLoading, isAuthenticated } = useToken();
   let tokenIdAssociado: string = token!; // Força sem validação
+
 
 
 
@@ -148,23 +188,33 @@ export default function ExtratoView({ idassociado }: Props) {
   };
 
   let addRegisterExtrato = async () => {
-    toast.info('Registrando Lançamento');
     const novoLancamento: NovoLancamento = {
+      token: token!,
       idassociado: idassociado,
       valorlancamento: valorLancamento,
-      statuslancamento : selectStatus,
+      statuslancamento : 'PENDING',
       datalancamento : datalancamento,
       description: description
     };
 
 
-    const dataNovoLancamento = await NovoLancamentoExtrato(novoLancamento);
+    const dataNovoLancamento = await NovoLancamentoInterno(novoLancamento);
+    let dataNovoLancamentoEvent = dataNovoLancamento.event;
+    console.log('----------------- NovoLancamentoInterno event')
+    console.log( dataNovoLancamentoEvent )
+    console.log('----------------- NovoLancamentoInterno event')
 
-    if(dataNovoLancamento.event === 'LANCAMENTO_EXTRATO_CREATED'){
-      toast.success( dataNovoLancamento.message );
+    if(dataNovoLancamentoEvent === 'LANCAMENTO_INTERNO_FAILED'){
+      toast.error( dataNovoLancamento.message );
       setDialogOpen(false);
-      viewDataAssociado();
     }
+    if(dataNovoLancamentoEvent === 'LANCAMENTO_INTERNO_CREATED'){
+      toast.success( dataNovoLancamento.message );
+      ViewListLancamentoExterno();
+      setDialogOpen(false);
+    }
+
+
   }
 
 
@@ -262,6 +312,37 @@ export default function ExtratoView({ idassociado }: Props) {
     detailsAssociado();
     toast.success('Extrato Atualizado!');
   }
+//ListExtratoInterno
+const ViewListLancamentoExterno = async () => {
+    const DetailsAssociado: DetailsAssociado = {
+      token: token!,
+      idassociado: idassociado,
+    };
+
+    const dataListLancamentoInterno = await ListExtratoInterno(DetailsAssociado);
+    let dataListLancamentoInternoEvent = dataListLancamentoInterno.event;
+
+
+      if(dataListLancamentoInternoEvent === 'EXTRATO_INTERNO_SUCCESS'){
+        setdatalistExtratoInterno(dataListLancamentoInterno.data);
+      }
+
+
+
+  };
+
+
+
+
+
+  const updateLancamentoExterno = async () => {
+      ViewListLancamentoExterno();
+  };
+
+
+
+
+
 
   // EFEITO PARA MONITORAR O TOKEN
   useEffect(() => {
@@ -270,6 +351,7 @@ export default function ExtratoView({ idassociado }: Props) {
       if (isAuthenticated) {
         // Só executa se tiver token
         detailsAssociado();
+        ViewListLancamentoExterno();
       } else {
         //console.log('❌ Usuário não autenticado - redirecionando...');
         // Aqui você pode redirecionar para login se necessário
@@ -336,7 +418,125 @@ export default function ExtratoView({ idassociado }: Props) {
         </div>
 
         <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4">
-          <div className="basis-full w-full max-w-full border border-gray-200 shadow-sm p-4">
+                    <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold mb-4">Meus Lançamentos</h3>
+
+                            <div className="flex gap-2">
+                              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                                <DialogTrigger asChild>
+                                  <Button variant="outline">
+                                    <PlusCircle />
+                                  </Button>
+                                </DialogTrigger>
+
+                                <DialogContent className="sm:max-w-[500px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Novo Lançamento</DialogTitle>
+                                  </DialogHeader>
+
+                                    <div className="grid gap-4 py-4">
+                                      <div className="flex flex-col gap-2">
+                                        <Label htmlFor="nome">Descrição</Label>
+                                        <Input
+                                          id="description"
+                                          placeholder="Descrição do Lançamento"
+                                          value={description}
+                                          onChange={(e) => setdescription(e.target.value)}
+                                          required
+                                        />
+                                      </div>
+
+
+                                      <div className="flex gap-4">
+                                        <div className="flex flex-col gap-2 w-full">
+                                          <Label htmlFor="email">Valor</Label>
+                                          <Input
+                                            id="valorlancamento"
+                                            placeholder="Valor Lancamento"
+                                            value={valorLancamento}
+                                            onChange={handleChange}
+                                            required
+                                          />
+                                        </div>
+
+                                        <div className="flex flex-col gap-2 w-full">
+                                          <Label htmlFor="email">Data</Label>
+                                          <Input
+                                          type="date"
+                                            id="datalancamento"
+                                            placeholder="Data Lançamento"
+                                            value={datalancamento}
+                                            onChange={(e) => setdatalancamento(e.target.value)}
+                                            required
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <DialogFooter>
+                                      <Button onClick={addRegisterExtrato} disabled={loading} >
+                                        {loading ? "Registrando..." : "Registrar Lançamento"}
+                                      </Button>
+                                    </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+
+
+                                <Button onClick={updateLancamentoExterno} >
+                                    <RefreshCcw className="w-4 h-4" />
+                                </Button>
+
+                            </div>
+
+                        </div>
+
+                        <div className="overflow-x-auto w-full">
+                            <Table>
+                                <TableHeader className="bg-muted rounded-md">
+                                    <TableRow>
+                                        <TableHead className="font-semibold text-sm">Data</TableHead>
+                                        <TableHead className="font-semibold text-sm">Descrição</TableHead>
+                                        <TableHead className="font-semibold text-sm">Valor</TableHead>
+                                        <TableHead className="font-semibold text-sm text-left">Ação</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+
+                                <TableBody>
+                                    {datalistExtratoInterno.map((datalancamento) => (
+                                        <TableRow key={datalancamento.id_extrato_interno}>
+                                            <TableCell>{datalancamento.data_lancamento}</TableCell>
+                                            <TableCell>{datalancamento.description}</TableCell>
+                                            <TableCell className="font-bold">R$ {Number(datalancamento.value).toFixed(2)}</TableCell>
+
+                                            <TableCell className="text-left">
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    onClick={() => router.push(`/associado/view/`)}
+                                                >
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger> <BanIcon className="w-4 h-4 text-red-600" /> </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Remover Lancamento</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold mb-4">Extrato</h3>
 
@@ -374,84 +574,6 @@ export default function ExtratoView({ idassociado }: Props) {
                 </DialogContent>
               </Dialog>
 
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline">
-                    <PlusCircle />
-                  </Button>
-                </DialogTrigger>
-
-                <DialogContent className="sm:max-w-[500px]">
-                  <DialogHeader>
-                    <DialogTitle>Novo Lançamento</DialogTitle>
-                  </DialogHeader>
-
-                    <div className="grid gap-4 py-4">
-                      <div className="flex flex-col gap-2">
-                        <Label htmlFor="nome">Descrição</Label>
-                        <Input
-                          id="description"
-                          placeholder="Descrição do Lançamento"
-                          value={description}
-                          onChange={(e) => setdescription(e.target.value)}
-                          required
-                        />
-                      </div>
-
-                      <div className="flex gap-4">
-                        <div className="flex flex-col gap-2 ">
-                          <Label>Status</Label>
-
-                          <Select
-                            value={selectStatus}
-                            onValueChange={setselectStatus}
-                          >
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Selecione um Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                  <SelectItem value='RECEIVED'>Pago</SelectItem>
-                                  <SelectItem value='PENDING'>Pendente</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div className="flex gap-4">
-                        <div className="flex flex-col gap-2 w-full">
-                          <Label htmlFor="email">Valor</Label>
-                          <Input
-                            id="valorlancamento"
-                            placeholder="Valor Lancamento"
-                            value={valorLancamento}
-                            onChange={handleChange}
-                            required
-                          />
-                        </div>
-
-                        <div className="flex flex-col gap-2 w-full">
-                          <Label htmlFor="email">Data</Label>
-                          <Input
-                          type="date"
-                            id="datalancamento"
-                            placeholder="Data Lançamento"
-                            value={datalancamento}
-                            onChange={(e) => setdatalancamento(e.target.value)}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <DialogFooter>
-                      <Button onClick={addRegisterExtrato} disabled={loading} >
-                        {loading ? "Lançando..." : "Registrar Lançamento"}
-                      </Button>
-                    </DialogFooter>
-                </DialogContent>
-              </Dialog>
 
               <Button onClick={syncExtrato}>
                 <RefreshCcw className="w-4 h-4 " />
@@ -520,7 +642,7 @@ export default function ExtratoView({ idassociado }: Props) {
               </Button>
             </div>
           </div>
-        </div>
+          </div>
       </div>
     </SidebarInset>
   </SidebarProvider>

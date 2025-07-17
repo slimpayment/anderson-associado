@@ -142,10 +142,6 @@ export default function Dashboard( { idassociado }: Props  ) {
             let responseData = response.data;
             let responseEvent = responseData.event;
             setnameprofile(responseData.nameAssociado);
-
-            console.log('--------------- responseData')
-            console.log( token )
-            console.log('--------------- responseData')
         } catch (error) {
             console.error('Erro ao buscar detalhes do associado:', error);
             toast.error('Erro ao carregar dados do associado');

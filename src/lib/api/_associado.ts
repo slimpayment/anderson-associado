@@ -13,6 +13,7 @@ type NovoAssociado = {
 
 
 type NovoLancamento = {
+  token: string
   idassociado : string;
   statuslancamento : string;
   valorlancamento : string;
@@ -20,6 +21,11 @@ type NovoLancamento = {
   description : string;
 
 };
+type ExtratoInterno = {
+  token: string
+  idassociado : string;
+};
+
 
 
 type dataFilter = {
@@ -112,6 +118,50 @@ export async function NovoLancamentoExtrato(NovoLancamento : NovoLancamento) {
     }
 
 }
+
+export async function NovoLancamentoInterno(NovoLancamento : NovoLancamento) {
+
+  try {
+      const response = await axios.post(`${API_URL}/associado/add/lancamento/interno`,{
+        token: NovoLancamento.token,
+        idassociado: NovoLancamento.idassociado,
+        valorlancamento: NovoLancamento.valorlancamento,
+        statuslancamento : NovoLancamento.statuslancamento,
+        datalancamento : NovoLancamento.datalancamento, // ou outro valor
+        description: NovoLancamento.description // ou outra descrição
+      });
+      return response.data;
+    } catch (error: any) {
+      // Reempacotar o erro com mensagem útil
+      throw new Error(
+        error?.code === 'ECONNREFUSED'
+          ? 'Não foi possível conectar ao servidor da API.'
+          : error?.message || 'Erro desconhecido ao buscar cliente.'
+      );
+    }
+
+}
+
+
+export async function ListExtratoInterno(ExtratoInterno : ExtratoInterno) {
+
+  try {
+      const response = await axios.post(`${API_URL}/associado/list/extrato/interno`,{
+        token: ExtratoInterno.token,
+        idassociado: ExtratoInterno.idassociado,
+      });
+      return response.data;
+    } catch (error: any) {
+      // Reempacotar o erro com mensagem útil
+      throw new Error(
+        error?.code === 'ECONNREFUSED'
+          ? 'Não foi possível conectar ao servidor da API.'
+          : error?.message || 'Erro desconhecido ao buscar cliente.'
+      );
+    }
+
+}
+
 
 
 

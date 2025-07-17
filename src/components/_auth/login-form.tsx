@@ -167,7 +167,7 @@ try {
             <Lock className="w-8 h-8 text-primary-foreground" />
           </div>
           <CardTitle className="text-2xl">
-            {isResetMode ? 'Recuperar Senha' : 'Painel Associados'}
+            {isResetMode ? 'Recuperar Senha' : 'Painel de Login'}
           </CardTitle>
           <CardDescription>
             {isResetMode
