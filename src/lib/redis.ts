@@ -6,7 +6,6 @@ const redisClient = createClient({
   },
   password: process.env.REDIS_PASSWORD,
 });
-console.log('############ Acessando LIB REDIS ############')
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
 

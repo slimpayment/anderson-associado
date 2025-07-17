@@ -36,6 +36,11 @@ export function useToken() {
   // Carrega o token quando o componente monta
   useEffect(() => {
     const tokenFromCookie = getCookie('token');
+
+    console.log('--------tokenFromCookie')
+    console.log(tokenFromCookie)
+    console.log('--------tokenFromCookie')
+
     setToken(tokenFromCookie);
     setLoading(false);
   }, []);
