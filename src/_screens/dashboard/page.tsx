@@ -205,7 +205,7 @@ export default function Dashboard( { idassociado }: Props  ) {
                     {/* Tabela com faturas */}
                     <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold mb-4">Meus Lançamentos</h3>
+                            <h3 className="text-lg font-semibold mb-4">Aguardando Aprovação</h3>
 
                             <div className="flex gap-2">
                                 <Button onClick={refreshlancamentosPendentes} >

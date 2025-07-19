@@ -46,9 +46,11 @@ export function LoginForm(){
   const { token, loading: tokenLoading, isAuthenticated } = useToken();
 
   const [isResetMode, setIsResetMode] = useState(false);
+  
   const [showPassword, setShowPassword] = useState(false);
   const [authEmail, setauthEmail] = useState("");
   const [authSenha, setauthSenha] = useState("");
+
   const [valueJWT, setvalueJWT] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState(false);
   const [ loadingsend, setloadingsend] = useState(false);
