@@ -607,14 +607,15 @@ const ViewListLancamentoExterno = async () => {
                 </TableCell>
 
               <TableCell className="font-medium">
-                {data.status_split === "PAGO" && (
-                  <Badge className="text-white bg-green-500">{data.status_split}</Badge>
-                )}
-                
                 {data.status_split === "APROVADO" && (
                     <Badge className="text-white bg-green-500">{data.status_split}</Badge>
                 )}
                 
+                {data.status_split === "PAGO" && (
+                  <Badge className="text-white bg-green-500">{data.status_split}</Badge>
+                )}
+                
+
                 {data.status_split === "PENDENTE" && (
                   <Badge className="text-white bg-gray-500">{data.status_split}</Badge>
                 )}
