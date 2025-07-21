@@ -420,7 +420,7 @@ const ViewListLancamentoExterno = async () => {
         <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4">
                     <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
                         <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold mb-4">Aguardando Aprovação</h3>
+                            <h3 className="text-red-600 text-lg font-semibold mb-4 ">Aguardando Aprovação</h3>
 
                             <div className="flex gap-2">
                               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
