@@ -44,15 +44,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
+
 
 import {
   Breadcrumb,
@@ -152,6 +144,11 @@ export default function Dashboard( { idassociado }: Props  ) {
         toast.info('Função em desenvolvimento ...')
     };
 
+    const removelancamento = async () => {
+        toast.info('Função em desenvolvimento ...')
+    };
+
+
     // Este useEffect só executa quando o token estiver disponível
     useEffect(() => {
         // Só executa se não estiver carregando e o token existir
@@ -243,8 +240,8 @@ export default function Dashboard( { idassociado }: Props  ) {
                                                 <Button
                                                     size="icon"
                                                     variant="ghost"
-                                                    onClick={() => router.push(`/associado/view/`)}
-                                                >
+                                                    onClick={removelancamento}
+                                                    >
                                                     <TooltipProvider>
                                                         <Tooltip>
                                                             <TooltipTrigger> <BanIcon className="w-4 h-4 text-red-600" /> </TooltipTrigger>
