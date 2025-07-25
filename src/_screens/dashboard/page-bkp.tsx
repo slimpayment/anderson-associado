@@ -22,12 +22,18 @@ import {
   Eye,
   BanIcon,
   RefreshCcw,
-  PlusIcon,CheckCircle, Info, AlertTriangle
+  PlusIcon
 } from "lucide-react";
 
 import { ChartContainer, ChartConfig } from "@/components/ui/chart";
 
-
+import {
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+  Label,
+} from "recharts";
 
 import {
   Table,
@@ -67,7 +73,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-
+const LancamentoExterno = [
+  {
+    id: "INV_0001",
+    associado: "Fulano de Talz",
+    dataLancamento: "26/06/2025",
+    categoria:"Categoria 1",
+    atividade:"Atividade XYZ",
+    valor: "250.00",
+    status: 'pendente'
+  },
+]
 
 type ExtratoListinterno = {
   id_extrato_interno: string;
@@ -79,12 +95,6 @@ type ExtratoListinterno = {
   description: string;
 };
 
-
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-
-
-
-
 import { useToken } from '@/hooks/useToken';
 import axios from 'axios';
 
@@ -92,6 +102,10 @@ interface Props {
   idassociado: string;
   tokenIdAssociado: string;
   dadosAssociado: any;
+}
+
+function ReprovallDialog({ datalancamento, onApprove }: { datalancamento: ExtratoListinterno, onApprove: (id: string, otp: string) => void }) {
+
 }
 
 
@@ -180,18 +194,77 @@ export default function Dashboard( { idassociado }: Props  ) {
             <AppSidebar />
             <BodyPageDefault>
                 <HeaderDashboard/>
-                {/* <div className="font-bold pl-4 mt-0">
+                <div className="font-bold pl-4 mt-0">
                     <span className="text-[22px]">Olá,</span><span className="p-1 text-[20px]">{nameprofile}</span>
-                </div> */}
+                </div>
 
                 <div className="flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4">
-<Alert className="mb-6 bg-blue-50 border border-black shadow-lg rounded-xl backdrop-blur-sm">
-    <Info className="h-5 w-5 text-black" />
-    <AlertTitle className="text-black font-semibold">Olá, {nameprofile}</AlertTitle>
-    <AlertDescription className="text-black">
-        Em breve novas informações no Dashboard.
-    </AlertDescription>
-</Alert>
+
+                    <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
+                        
+                    </div>
+
+                    {/* Tabela com faturas */}
+                    <div className="basis-full md:basis-2/4 w-full max-w-full border border-gray-200 shadow-sm p-4">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-semibold mb-4">Últimos Lancamentos</h3>
+
+                            <div className="flex gap-2">
+                                <Button onClick={refreshlancamentosPendentes} >
+                                    <RefreshCcw className="w-4 h-4" />
+                                </Button>
+                            </div>
+
+                        </div>
+
+                        <div className="overflow-x-auto w-full">
+                            <Table>
+                                <TableHeader className="bg-muted rounded-md">
+                                    <TableRow>
+                                        <TableHead className="font-semibold text-sm">Data</TableHead>
+                                        <TableHead className="font-semibold text-sm">Categoria</TableHead>
+                                        <TableHead className="font-semibold text-sm">Atividade</TableHead>
+                                        <TableHead className="font-semibold text-sm">Valor</TableHead>
+                                        <TableHead className="font-semibold text-sm text-left">Ação</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+
+                                <TableBody>
+                                    {LancamentoExterno.map((datalancamento) => (
+                                        <TableRow key={datalancamento.id}>
+                                            <TableCell>{datalancamento.dataLancamento}</TableCell>
+                                            <TableCell>{datalancamento.categoria}</TableCell>
+                                            <TableCell>{datalancamento.atividade}</TableCell>
+                                            <TableCell className="font-bold">R$ {Number(datalancamento.valor).toFixed(2)}</TableCell>
+
+                                            <TableCell className="text-left">
+                                                <Button
+                                                    size="icon"
+                                                    variant="ghost"
+                                                    onClick={removelancamento}
+                                                    >
+                                                    <TooltipProvider>
+                                                        <Tooltip>
+                                                            <TooltipTrigger> <BanIcon className="w-4 h-4 text-red-600" /> </TooltipTrigger>
+                                                            <TooltipContent>
+                                                                <p>Remover Lancamento</p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </TooltipProvider>
+                                                </Button>
+                                            </TableCell>
+
+
+
+
+
+                                            
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    </div>
                 </div>
 
             </BodyPageDefault>
