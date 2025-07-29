@@ -27,7 +27,20 @@ export async function authLogin(dataLogin: dataLogin) {
     return response.data;
   } catch (error: any) {
     // Reempacotar o erro com mensagem útil
+    return error;
+
+    console.log('------------------- error responseAuth')
+    console.log(error) 
+    console.log('------------------- error responseAuth')
+
+
+
+
+
     throw new Error(
+
+
+      
       error?.code === 'ECONNREFUSED'
         ? 'Não foi possível conectar ao servidor da API.'
         : error?.message || 'Erro desconhecido ao buscar cliente.'

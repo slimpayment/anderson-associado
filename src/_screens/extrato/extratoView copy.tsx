@@ -260,6 +260,36 @@ export default function ExtratoView({ idassociado }: Props) {
 
   };
 
+  const viewDataAssociado = async () => {
+
+    try {
+
+      
+      //const dataViewAssociado = await viewAssociado(tokenIdAssociado);
+      const dataViewAssociado = await viewAssociado();
+
+      setqtdExtrato('')
+      settotalPago(dataViewAssociado.statics.totalPago);
+      settotalPendente(dataViewAssociado.statics.totalPendente);
+      settotalVencido(dataViewAssociado.statics.totalVencido);  
+
+      if( dataViewAssociado.event === 'ASSOCIADO_VIEW_SUCCESS'){
+        setnameprofile(dataViewAssociado.data.name);
+        setdatalistExtratoSplit(dataViewAssociado.list_extrato_split);
+        setLoading(true);
+        toast.success('Lista Atualizada com sucesso!');
+      }
+    } catch (error: any) {
+      console.log( 'ERR consultando associadosDetails ....' )
+        console.log( error )
+      console.log( 'ERR consultando associadosDetails ....' )
+
+      toast.error('Erro ao atualizar clientes');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const syncExtrato = async () => {
     detailsAssociado();
     toast.success('Extrato Atualizado!');

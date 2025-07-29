@@ -74,14 +74,18 @@ export function LoginForm(){
 
     const responseAuth = await authLogin(datalogin);
     setIsLoading(true);
+    if (responseAuth.message === 'Network Error') {
+      toast.error('Falha ao efetuar Login, Tente mais tarde!');
+
+    }
 
 
-  if (responseAuth.event === 'AUTH_LOGIN_FAILED') {
-    //setErrorMessage(responseAuth.message);
-    toast.error(responseAuth.message);
+    if (responseAuth.event === 'AUTH_LOGIN_FAILED') {
+      //setErrorMessage(responseAuth.message);
+      toast.error(responseAuth.message);
 
-    console.log('Setou mensagem de erro');
-  }
+      console.log('Setou mensagem de erro');
+    }
 
     if( responseAuth.event === 'AUTH_LOGIN_SUCCESS'){
       let dataToken =  responseAuth.token
